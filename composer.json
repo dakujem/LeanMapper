@@ -26,6 +26,10 @@
 		"nette/bootstrap": "~2.2",
 		"nette/di": "~2.2",
 		"nette/robot-loader": "~2.2",
-		"nette/tester": "~1.0"
+		"nette/tester": "^2"
+	},
+	"scripts": {
+		"props":"tester tests/LeanMapper/EntityReflection.parsing.phpt -C",
+		"test":"tester tests -C"
 	}
 }

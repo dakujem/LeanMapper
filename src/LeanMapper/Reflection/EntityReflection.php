@@ -45,6 +45,9 @@ class EntityReflection extends \ReflectionClass
     private $internalGetters = ['getData', 'getRowData', 'getModifiedRowData', 'getCurrentReflection', 'getReflection', 'getHasManyRowDifferences', 'getEntityClass'];
 
 
+    /** @var callable[] */
+	public static $onPropertyParse = [];
+
 
     /**
      * @param mixed $argument
@@ -171,10 +174,16 @@ class EntityReflection extends \ReflectionClass
      */
     private function parseProperties()
     {
+		$line = $this->getFamilyLine();
+		
+		foreach(static::$onPropertyParse as $cb){
+			call_user_func($cb, $this, $line);
+		}
+
         $this->properties = [];
         $annotationTypes = ['property', 'property-read'];
         $columns = [];
-        foreach ($this->getFamilyLine() as $member) {
+        foreach ($line as $member) {
             foreach ($annotationTypes as $annotationType) {
                 foreach (AnnotationsParser::parseMultiLineAnnotationValues($annotationType, $member->getDocComment()) as $definition) {
                     $property = PropertyFactory::createFromAnnotation($annotationType, $definition, $member, $this->mapper);
